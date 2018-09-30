@@ -1,10 +1,9 @@
-﻿using TinyUniversity.Models;                   // SchoolContext
+using TinyUniversity.Models;                   // SchoolContext
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;   // CreateScope
 using Microsoft.Extensions.Logging;
 using System;
-using TinyUniversity.Data;
 
 namespace TinyUniversity
 {
@@ -21,9 +20,7 @@ namespace TinyUniversity
                 try
                 {
                     var context = services.GetRequiredService<SchoolContext>();
-                    //context.Database.EnsureDeleted();
-                    //context.Database.EnsureCreated();
-                    DBInitializer.Initialize(context);
+                    context.Database.EnsureCreated();
                 }
                 catch (Exception ex)
                 {

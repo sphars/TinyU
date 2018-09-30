@@ -1,0 +1,49 @@
+public async Task<IActionResult> OnPostAsync()
+{
+    if (!ModelState.IsValid)
+    {
+        return Page();
+    }
+
+    var emptyStudent = new Student();
+
+    if (await TryUpdateModelAsync<Student>(
+        emptyStudent,
+        "student",   // Prefix for form value.
+        s => s.FirstMidName, s => s.LastName, s => s.EnrollmentDate))
+    {
+        _context.Student.Add(emptyStudent);
+        await _context.SaveChangesAsync();
+        return RedirectToPage("./Index");
+    }
+
+    return null;
+}public async Task<IActionResult> OnPostAsync(int? id)
+{
+    if (id == null)
+    {
+        return NotFound();
+    }
+
+    var student = await _context.Student
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.ID == id);
+
+    if (student == null)
+    {
+        return NotFound();
+    }
+
+    try
+    {
+        _context.Student.Remove(student);
+        await _context.SaveChangesAsync();
+        return RedirectToPage("./Index");
+    }
+    catch (DbUpdateException /* ex */)
+    {
+        //Log the error (uncomment ex variable name and write a log.)
+        return RedirectToAction("./Delete",
+                             new { id, saveChangesError = true });
+    }
+}
